@@ -31,10 +31,42 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <RadioGroup
+                android:id="@+id/relativeRadioGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/parentRadio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/_5sdp"
+                    android:text="PARENT" />
+
+                <RadioButton
+                    android:id="@+id/childRadio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/_5sdp"
+                    android:checked="true"
+                    android:text="CHILD" />
+
+            </RadioGroup>
+
+            <Spinner
+                android:id="@+id/userListSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_10sdp" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp">
+                android:layout_marginTop="@dimen/_10sdp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imgProfile"
@@ -68,53 +100,9 @@
                 android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:hint="First Name"
-                android:imeOptions="actionNext"
-                android:inputType="textAutoComplete" />
-
-            <EditText
-                android:id="@+id/etvFatherName"
-                style="@style/edittext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:hint="Father's Name"
-                android:imeOptions="actionNext"
-                android:inputType="textAutoComplete" />
-
-            <EditText
-                android:id="@+id/etvFamilyName"
-                style="@style/edittext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:hint="Family Name"
-                android:imeOptions="actionNext"
-                android:inputType="textAutoComplete" />
-
-
-            <EditText
-                android:id="@+id/etvMotherName"
-                style="@style/edittext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:hint="Mother's Name"
-                android:imeOptions="actionNext"
-                android:inputType="textAutoComplete" />
-
-            <EditText
-                android:id="@+id/etvSpouseName"
-                style="@style/edittext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:hint="Spouse's Name"
                 android:imeOptions="actionDone"
                 android:inputType="textAutoComplete" />
+
 
             <EditText
                 android:id="@+id/etvDob"

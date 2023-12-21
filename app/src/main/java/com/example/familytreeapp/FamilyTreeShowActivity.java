@@ -26,6 +26,9 @@ public class FamilyTreeShowActivity extends AppCompatActivity {
         zoomLayout = findViewById(R.id.zoomLayout);
         imgBack = findViewById(R.id.imgBack);
 
+        zoomLayout.setMinZoom(1.0f);
+        zoomLayout.setMaxZoom(5.0f);
+
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

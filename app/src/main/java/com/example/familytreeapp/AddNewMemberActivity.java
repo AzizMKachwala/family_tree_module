@@ -14,9 +14,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -24,7 +29,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class AddNewMemberActivity extends BaseClass {
 
     CircleImageView imgProfile;
-    EditText etvFirstName, etvFamilyName, etvFatherName, etvMotherName, etvSpouseName, etvDob;
+    EditText etvFirstName, etvDob;
+    RadioGroup relativeRadioGroup;
+    RadioButton selectedRadioButton;
+    Spinner userListSpinner;
     Button btnAdd;
     ImageView imgBack, imgEdit;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -33,6 +41,7 @@ public class AddNewMemberActivity extends BaseClass {
     Bitmap imageBitmap;
     DatePickerFragment datePickerFragment;
     String profileImage;
+    String selectedUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +50,12 @@ public class AddNewMemberActivity extends BaseClass {
 
         imgProfile = findViewById(R.id.imgProfile);
         etvFirstName = findViewById(R.id.etvFirstName);
-        etvFamilyName = findViewById(R.id.etvFamilyName);
-        etvFatherName = findViewById(R.id.etvFatherName);
-        etvMotherName = findViewById(R.id.etvMotherName);
-        etvSpouseName = findViewById(R.id.etvSpouseName);
         etvDob = findViewById(R.id.etvDob);
         btnAdd = findViewById(R.id.btnAdd);
         imgBack = findViewById(R.id.imgBack);
         imgEdit = findViewById(R.id.imgEdit);
+        relativeRadioGroup = findViewById(R.id.relativeRadioGroup);
+        userListSpinner = findViewById(R.id.userListSpinner);
 
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,31 +116,52 @@ public class AddNewMemberActivity extends BaseClass {
             etvDob.setText(getIntent().getStringExtra("MemberDob"));
         }
 
+        boolean editProfile = getIntent().getBooleanExtra("EditProfile", false);
+
+        if (editProfile) {
+            btnAdd.setText("Save");
+            etvFirstName.setText(getIntent().getStringExtra("FirstName"));
+            etvDob.setText(getIntent().getStringExtra("Dob"));
+        }
+
+        String[] UserList = {"Select Member", "XYZ", "ABC"};
+        ArrayAdapter<String> userAdapter = new ArrayAdapter<>(AddNewMemberActivity.this, android.R.layout.simple_spinner_item, UserList);
+        userAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        userListSpinner.setAdapter(userAdapter);
+
+        userListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedUser = (String) adapterView.getSelectedItem();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                int selectedRadioButtonId = relativeRadioGroup.getCheckedRadioButtonId();
+                selectedRadioButton = findViewById(selectedRadioButtonId);
+                String relation = selectedRadioButton.getText().toString();
+
                 if (etvFirstName.getText().toString().isEmpty()) {
                     etvFirstName.setError("Enter First Name");
                     etvFirstName.requestFocus();
-                } else if (etvFatherName.getText().toString().isEmpty()) {
-                    etvFatherName.setError("Enter Father's Name");
-                    etvFatherName.requestFocus();
-                } else if (etvFamilyName.getText().toString().isEmpty()) {
-                    etvFamilyName.setError("Enter Family Name");
-                    etvFamilyName.requestFocus();
-                } else if (etvMotherName.getText().toString().isEmpty()) {
-                    etvMotherName.setError("Enter Mother's Name");
-                    etvMotherName.requestFocus();
+                } else if (relation.isEmpty()) {
+                    Toast.makeText(AddNewMemberActivity.this, "Select Parent Or Child", Toast.LENGTH_SHORT).show();
+                } else if (selectedUser.equals("Select Member")) {
+                    Toast.makeText(AddNewMemberActivity.this, "Select Member", Toast.LENGTH_SHORT).show();
                 } else if (etvDob.getText().toString().isEmpty()) {
                     Toast.makeText(AddNewMemberActivity.this, "Select Date Of Birth", Toast.LENGTH_SHORT).show();
                 } else {
                     //Add Data to the Database
                     Toast.makeText(AddNewMemberActivity.this, etvFirstName.getText().toString() + " "
-                            + etvFatherName.getText().toString() + " "
-                            + etvFamilyName.getText().toString() + " "
-                            + etvMotherName.getText().toString() + " "
-                            + etvSpouseName.getText().toString() + " "
-                            + etvDob.getText().toString(), Toast.LENGTH_SHORT).show();
+                            + etvDob.getText().toString() + " " + relation + " " + selectedUser, Toast.LENGTH_SHORT).show();
                 }
             }
         });

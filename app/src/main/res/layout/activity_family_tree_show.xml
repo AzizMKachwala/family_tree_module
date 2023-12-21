@@ -9,15 +9,15 @@
         android:id="@+id/imgBack"
         android:layout_width="@dimen/_35sdp"
         android:layout_height="@dimen/_35sdp"
-        android:src="@drawable/baseline_back_24"
         android:layout_marginHorizontal="@dimen/_5sdp"
-        android:layout_marginVertical="@dimen/_5sdp"/>
+        android:layout_marginVertical="@dimen/_5sdp"
+        android:src="@drawable/baseline_back_24" />
 
     <com.otaliastudios.zoom.ZoomLayout
         android:id="@+id/zoomLayout"
-        android:layout_below="@id/imgBack"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/imgBack"
         android:scrollbars="vertical|horizontal">
 
         <androidx.recyclerview.widget.RecyclerView

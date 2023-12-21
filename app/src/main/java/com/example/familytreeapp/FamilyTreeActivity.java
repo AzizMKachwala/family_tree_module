@@ -62,7 +62,7 @@ public class FamilyTreeActivity extends AppCompatActivity {
         imgUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(FamilyTreeActivity.this, ProfileActivity.class));
             }
         });
 

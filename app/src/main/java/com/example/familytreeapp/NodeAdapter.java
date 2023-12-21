@@ -34,7 +34,7 @@ public class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.NodeDataViewHo
 
     @Override
     public int getItemCount() {
-        return 6;
+        return 10;
     }
 
     public static class NodeDataViewHolder extends RecyclerView.ViewHolder {

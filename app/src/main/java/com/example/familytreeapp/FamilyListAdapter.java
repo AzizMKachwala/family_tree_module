@@ -1,16 +1,23 @@
 package com.example.familytreeapp;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -18,17 +25,7 @@ public class FamilyListAdapter extends RecyclerView.Adapter<FamilyListAdapter.Fa
 
     //    private ArrayList<MyDbDataModelNotes> myDbDataModelNotesArrayList, searchList;
     Context context;
-    ButtonClick buttonClick;
     private boolean editMode = false;
-
-
-    public interface ButtonClick {
-        void buttonClick(int position);
-    }
-
-    public void SetUpInterface(ButtonClick buttonClick) {
-        this.buttonClick = buttonClick;
-    }
 
     public FamilyListAdapter(Context context) {
         this.context = context;
@@ -47,9 +44,9 @@ public class FamilyListAdapter extends RecyclerView.Adapter<FamilyListAdapter.Fa
         holder.txtMemberName.setText("Aziz");
         holder.txtMemberDob.setText("2001/04/24");
 
-        Tools.DisplayImage(context, holder.imgMember, "");
+        Glide.with(context).load(R.drawable.photo_final).into(holder.imgMember);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, AddNewMemberActivity.class);
@@ -59,11 +56,37 @@ public class FamilyListAdapter extends RecyclerView.Adapter<FamilyListAdapter.Fa
                 context.startActivity(intent);
             }
         });
+
+        holder.imgDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Are You Sure You Want To Delete This Node Along With its Child Nodes ?");
+                builder.setCancelable(false);
+
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //Delete Node API
+                        Toast.makeText(context, "Delete Toast", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return 6;
+        return 10;
     }
 
     public void search(CharSequence charSequence, TextView txtNoData, RecyclerView recyclerViewFamilyList) {
@@ -81,6 +104,7 @@ public class FamilyListAdapter extends RecyclerView.Adapter<FamilyListAdapter.Fa
 
         CircleImageView imgMember;
         TextView txtMemberName, txtMemberDob;
+        ImageView imgEdit, imgDelete;
 
         public FamilyListDataViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -88,6 +112,8 @@ public class FamilyListAdapter extends RecyclerView.Adapter<FamilyListAdapter.Fa
             imgMember = itemView.findViewById(R.id.imgMember);
             txtMemberName = itemView.findViewById(R.id.txtMemberName);
             txtMemberDob = itemView.findViewById(R.id.txtMemberDob);
+            imgEdit = itemView.findViewById(R.id.imgEdit);
+            imgDelete = itemView.findViewById(R.id.imgDelete);
         }
     }
 }

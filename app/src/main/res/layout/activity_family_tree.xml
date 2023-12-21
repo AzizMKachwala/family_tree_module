@@ -9,15 +9,17 @@
     <LinearLayout
         android:id="@+id/lytHeading"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_45sdp"
         android:layout_marginHorizontal="@dimen/_5sdp"
-        android:layout_marginTop="@dimen/_5sdp">
+        android:background="@drawable/custom_top_background">
 
         <ImageView
             android:id="@+id/imgUserProfile"
             android:layout_width="@dimen/_40sdp"
             android:layout_height="@dimen/_30sdp"
             android:layout_weight="0.3"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/baseline_person_24" />
 
         <TextView
@@ -33,6 +35,8 @@
             android:layout_width="@dimen/_40sdp"
             android:layout_height="@dimen/_30sdp"
             android:layout_weight="0.3"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/baseline_home_24" />
 
     </LinearLayout>
@@ -50,11 +54,10 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabMode"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_40sdp"
+        android:layout_height="@dimen/_45sdp"
         android:layout_alignParentBottom="true"
         android:layout_marginHorizontal="@dimen/_5sdp"
-        android:layout_marginBottom="@dimen/_5sdp"
-        android:background="@color/blue"
+        android:background="@drawable/custom_bottom_background"
         app:tabGravity="fill"
         app:tabIndicatorHeight="3dp"
         app:tabTextColor="@color/white" />
