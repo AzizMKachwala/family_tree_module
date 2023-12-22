@@ -58,7 +58,9 @@ public class FamilyListFragment extends Fragment {
             @Override
             public void onRefresh() {
                 if (myDataBaseHandler.getAllMembers().size() > 0 && myDataBaseHandler.getAllMembers() != null) {
-                    familyListAdapter.updateData(myDataBaseHandler.getAllMembers());
+                    familyListAdapter = new FamilyListAdapter(getContext(), myDataBaseHandler.getAllMembers());
+                    recyclerViewFamilyList.setLayoutManager(new LinearLayoutManager(getContext()));
+                    recyclerViewFamilyList.setAdapter(familyListAdapter);
                     txtNoData.setVisibility(View.GONE);
                 } else {
                     txtNoData.setVisibility(View.VISIBLE);
@@ -110,5 +112,6 @@ public class FamilyListFragment extends Fragment {
             txtNoData.setVisibility(View.GONE);
         } else {
             txtNoData.setVisibility(View.VISIBLE);
-        }    }
+        }
+    }
 }

@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -27,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import dev.bandb.graphview.AbstractGraphAdapter;
 
 public class AddNewMemberActivity extends BaseClass {
 
@@ -44,8 +47,9 @@ public class AddNewMemberActivity extends BaseClass {
     DatePickerFragment datePickerFragment;
     String profileImage;
     String selectedUser;
-    int userId;
+    String userId;
 
+    private static final int ADD_MEMBER_REQUEST_CODE = 1001;
     MyDataBaseHandler myDataBaseHandler;
     List<String> userList = new ArrayList<>();
 
@@ -122,7 +126,6 @@ public class AddNewMemberActivity extends BaseClass {
             btnAdd.setText("Edit Member");
             etvFirstName.setText(getIntent().getStringExtra("MemberName"));
             etvDob.setText(getIntent().getStringExtra("MemberDob"));
-
             Tools.DisplayImage(AddNewMemberActivity.this, imgProfile, getIntent().getStringExtra("MemberImage"));
         }
 
@@ -132,7 +135,6 @@ public class AddNewMemberActivity extends BaseClass {
             btnAdd.setText("Save");
             etvFirstName.setText(getIntent().getStringExtra("FirstName"));
             etvDob.setText(getIntent().getStringExtra("Dob"));
-
             Tools.DisplayImage(AddNewMemberActivity.this, imgProfile, getIntent().getStringExtra("Image"));
         }
 
@@ -148,7 +150,7 @@ public class AddNewMemberActivity extends BaseClass {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedUser = (String) adapterView.getSelectedItem();
-                userId = i;
+                userId = String.valueOf(i);
             }
 
             @Override
@@ -164,6 +166,7 @@ public class AddNewMemberActivity extends BaseClass {
                 int selectedRadioButtonId = relativeRadioGroup.getCheckedRadioButtonId();
                 selectedRadioButton = findViewById(selectedRadioButtonId);
                 String relation = selectedRadioButton.getText().toString();
+//                 myDataBaseHandler.insertMemberData(etvFirstName.getText().toString(), etvDob.getText().toString(), profileImage, "0");
 
                 if (etvFirstName.getText().toString().isEmpty()) {
                     etvFirstName.setError("Enter First Name");
@@ -177,33 +180,26 @@ public class AddNewMemberActivity extends BaseClass {
                 } else {
                     //Add Data to the API Database
 
-
-
                     if (relation.equals("PARENT")) {
-                        for (int i = 0; i >= myDataBaseHandler.getAllMembers().size(); i++) {
-                            if (selectedUser == myDataBaseHandler.getAllMembers().get(i).getUserName()) {
-                                String pid = myDataBaseHandler.getAllMembers().get(i).getUserParentId();
-                                myDataBaseHandler.insertMemberData(etvFirstName.getText().toString(), etvDob.getText().toString(), imgProfile.toString(), pid);
-                                Toast.makeText(AddNewMemberActivity.this, "" + pid, Toast.LENGTH_SHORT).show();
+                        for (int i = 0; i < myDataBaseHandler.getAllMembers().size(); i++) {
+                            if (userId.equals(myDataBaseHandler.getAllMembers().get(i).getUserId())) {
+                                String pId = myDataBaseHandler.getAllMembers().get(i).getUserParentId();
+                                long insertedUserId = myDataBaseHandler.insertMemberData(etvFirstName.getText().toString(), etvDob.getText().toString(), profileImage, pId);
+//                                Toast.makeText(AddNewMemberActivity.this, "Last inserted user's ID: " + insertedId, Toast.LENGTH_SHORT).show();
+                                myDataBaseHandler.updateParentId(userId, insertedUserId);
                                 finish();
                             }
                         }
-//                        myDataBaseHandler.insertMemberData(etvFirstName.getText().toString(),etvDob.getText().toString(),imgProfile.toString(),selectedUser);
-                        //myDataBaseHandler.insertMemberData(etvFirstName.getText().toString(), etvDob.getText().toString(), imgProfile.toString(), String.valueOf(userId));
                         //Add User with ParentId of Parent's ParentId and then change the Parent's ParentId to the UserId of the New User
-                        Toast.makeText(AddNewMemberActivity.this, "" + relation + userId, Toast.LENGTH_SHORT).show();
-
-
 
                     } else if (relation.equals("CHILD")) {
                         if (editMode || editProfile) {
-                            myDataBaseHandler.updateMember(getIntent().getStringExtra("MemberId"), etvFirstName.getText().toString(), etvDob.getText().toString(), imgProfile.toString(), getIntent().getStringExtra("MemberParentId"));
+                            myDataBaseHandler.updateMember(getIntent().getStringExtra("MemberId"), etvFirstName.getText().toString(), etvDob.getText().toString(), profileImage, getIntent().getStringExtra("MemberParentId"));
                         } else {
-                            myDataBaseHandler.insertMemberData(etvFirstName.getText().toString(), etvDob.getText().toString(), imgProfile.toString(), String.valueOf(userId));
+                            myDataBaseHandler.insertMemberData(etvFirstName.getText().toString(), etvDob.getText().toString(), profileImage, String.valueOf(userId));
                         }
-                        Toast.makeText(AddNewMemberActivity.this, etvFirstName.getText().toString() + " " + etvDob.getText().toString() + " " + relation + " " + selectedUser + userId, Toast.LENGTH_SHORT).show();
                         finish();
-                        //Add User with the selectedUser's UserId
+                        //Add User with the selectedUser's UserId in ParentId
                     }
                 }
             }
@@ -282,5 +278,4 @@ public class AddNewMemberActivity extends BaseClass {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
 }

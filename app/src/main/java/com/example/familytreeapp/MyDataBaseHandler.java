@@ -38,15 +38,18 @@ public class MyDataBaseHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_TABLE);
     }
 
-    public void insertMemberData(String Name, String DOB, String Image, String ParentId) {
+    public long insertMemberData(String Name, String DOB, String Image, String ParentId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_USER_NAME, Name);
         values.put(KEY_USER_DOB, DOB);
         values.put(KEY_USER_IMAGE, Image);
         values.put(KEY_USER_PARENT_ID, ParentId);
-        db.insert(TABLE_FAMILY, null, values);
+
+        long insertedUserId = db.insert(TABLE_FAMILY, null, values);
         db.close();
+
+        return insertedUserId;
     }
 
     public ArrayList<MyDbDataModelFamily> getAllMembers() {
@@ -86,6 +89,17 @@ public class MyDataBaseHandler extends SQLiteOpenHelper {
         values.put(KEY_USER_NAME, newName);
         values.put(KEY_USER_DOB, newDOB);
         values.put(KEY_USER_IMAGE, newImage);
+        values.put(KEY_USER_PARENT_ID, newParentId);
+
+        db.update(TABLE_FAMILY, values, KEY_USER_ID + "=?", new String[]{userId});
+
+        db.close();
+    }
+
+    public void updateParentId(String userId, long newParentId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
         values.put(KEY_USER_PARENT_ID, newParentId);
 
         db.update(TABLE_FAMILY, values, KEY_USER_ID + "=?", new String[]{userId});

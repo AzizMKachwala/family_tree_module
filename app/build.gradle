@@ -50,7 +50,7 @@ dependencies {
     implementation 'com.hbb20:ccp:2.6.0'
 
     //GraphView for Tree Structure
-    implementation 'dev.bandb.graphview:graphview:0.8.1'
+        implementation 'dev.bandb.graphview:graphview:0.8.1'
     implementation 'com.otaliastudios:zoomlayout:1.9.0'
 
     //DBInspector

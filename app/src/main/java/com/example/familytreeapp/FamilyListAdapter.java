@@ -18,12 +18,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FamilyListAdapter extends RecyclerView.Adapter<FamilyListAdapter.FamilyListDataViewHolder> {
 
-    private ArrayList<MyDbDataModelFamily> myDbDataModelFamilyArrayList, searchList;
+    private List<MyDbDataModelFamily> myDbDataModelFamilyArrayList, searchList;
     Context context;
     MyDataBaseHandler myDataBaseHandler;
 
@@ -47,6 +48,7 @@ public class FamilyListAdapter extends RecyclerView.Adapter<FamilyListAdapter.Fa
     public void onBindViewHolder(@NonNull FamilyListDataViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
         myDataBaseHandler = new MyDataBaseHandler(holder.itemView.getContext());
+        holder.txtMemberName.setSelected(true);
         holder.txtMemberName.setText(searchList.get(position).getUserName());
         holder.txtMemberDob.setText(searchList.get(position).getUserDob());
 
@@ -77,7 +79,6 @@ public class FamilyListAdapter extends RecyclerView.Adapter<FamilyListAdapter.Fa
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //Delete Node API
-
                         myDataBaseHandler.deleteMemberById(myDataBaseHandler.getAllMembers().get(position).getUserId());
                         updateData(myDataBaseHandler.getAllMembers());
                         Toast.makeText(context, "Delete Toast", Toast.LENGTH_SHORT).show();
@@ -118,11 +119,28 @@ public class FamilyListAdapter extends RecyclerView.Adapter<FamilyListAdapter.Fa
 
         String charString = charSequence.toString().trim();
         if (charString.isEmpty()) {
+            searchList = myDbDataModelFamilyArrayList;
             recyclerViewFamilyList.setVisibility(View.VISIBLE);
             txtNoData.setVisibility(View.GONE);
         } else {
-
+            int Flag = 0;
+            List<MyDbDataModelFamily> list = new ArrayList<>();
+            for (MyDbDataModelFamily single : myDbDataModelFamilyArrayList) {
+                if (single.getUserName().toLowerCase().contains(charString.toLowerCase())) {
+                    list.add(single);
+                    Flag = 1;
+                }
+            }
+            if (Flag == 1) {
+                myDbDataModelFamilyArrayList = list;
+                recyclerViewFamilyList.setVisibility(View.VISIBLE);
+                txtNoData.setVisibility(View.GONE);
+            } else {
+                recyclerViewFamilyList.setVisibility(View.GONE);
+                txtNoData.setVisibility(View.VISIBLE);
+            }
         }
+        notifyDataSetChanged();
     }
 
     public static class FamilyListDataViewHolder extends RecyclerView.ViewHolder {
