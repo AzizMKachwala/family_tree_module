@@ -17,9 +17,9 @@
             android:id="@+id/imgUserProfile"
             android:layout_width="@dimen/_40sdp"
             android:layout_height="@dimen/_30sdp"
-            android:layout_weight="0.3"
-            android:layout_marginStart="@dimen/_5sdp"
             android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_weight="0.3"
             android:src="@drawable/baseline_person_24" />
 
         <TextView
@@ -34,9 +34,9 @@
             android:id="@+id/imgHome"
             android:layout_width="@dimen/_40sdp"
             android:layout_height="@dimen/_30sdp"
-            android:layout_weight="0.3"
-            android:layout_marginEnd="@dimen/_5sdp"
             android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_weight="0.3"
             android:src="@drawable/baseline_home_24" />
 
     </LinearLayout>
@@ -59,7 +59,8 @@
         android:layout_marginHorizontal="@dimen/_5sdp"
         android:background="@drawable/custom_bottom_background"
         app:tabGravity="fill"
-        app:tabIndicatorHeight="3dp"
+        app:tabIndicatorColor="@color/white"
+        app:tabIndicatorHeight="@dimen/_3sdp"
         app:tabTextColor="@color/white" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
