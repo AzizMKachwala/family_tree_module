@@ -1,10 +1,5 @@
 package com.example.familytreeapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,6 +19,13 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AddNewMemberActivity extends BaseClass {
@@ -42,6 +44,10 @@ public class AddNewMemberActivity extends BaseClass {
     DatePickerFragment datePickerFragment;
     String profileImage;
     String selectedUser;
+    int userId;
+
+    MyDataBaseHandler myDataBaseHandler;
+    List<String> userList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +62,8 @@ public class AddNewMemberActivity extends BaseClass {
         imgEdit = findViewById(R.id.imgEdit);
         relativeRadioGroup = findViewById(R.id.relativeRadioGroup);
         userListSpinner = findViewById(R.id.userListSpinner);
+
+        myDataBaseHandler = new MyDataBaseHandler(AddNewMemberActivity.this);
 
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,6 +122,8 @@ public class AddNewMemberActivity extends BaseClass {
             btnAdd.setText("Edit Member");
             etvFirstName.setText(getIntent().getStringExtra("MemberName"));
             etvDob.setText(getIntent().getStringExtra("MemberDob"));
+
+            Tools.DisplayImage(AddNewMemberActivity.this, imgProfile, getIntent().getStringExtra("MemberImage"));
         }
 
         boolean editProfile = getIntent().getBooleanExtra("EditProfile", false);
@@ -122,10 +132,15 @@ public class AddNewMemberActivity extends BaseClass {
             btnAdd.setText("Save");
             etvFirstName.setText(getIntent().getStringExtra("FirstName"));
             etvDob.setText(getIntent().getStringExtra("Dob"));
+
+            Tools.DisplayImage(AddNewMemberActivity.this, imgProfile, getIntent().getStringExtra("Image"));
         }
 
-        String[] UserList = {"Select Member", "XYZ", "ABC"};
-        ArrayAdapter<String> userAdapter = new ArrayAdapter<>(AddNewMemberActivity.this, android.R.layout.simple_spinner_item, UserList);
+        userList.add("Select Member");
+        for (int i = 0; i < myDataBaseHandler.getAllMembers().size(); i++) {
+            userList.add(myDataBaseHandler.getAllMembers().get(i).userName);
+        }
+        ArrayAdapter<String> userAdapter = new ArrayAdapter<>(AddNewMemberActivity.this, android.R.layout.simple_spinner_item, userList);
         userAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         userListSpinner.setAdapter(userAdapter);
 
@@ -133,6 +148,7 @@ public class AddNewMemberActivity extends BaseClass {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedUser = (String) adapterView.getSelectedItem();
+                userId = i;
             }
 
             @Override
@@ -159,12 +175,44 @@ public class AddNewMemberActivity extends BaseClass {
                 } else if (etvDob.getText().toString().isEmpty()) {
                     Toast.makeText(AddNewMemberActivity.this, "Select Date Of Birth", Toast.LENGTH_SHORT).show();
                 } else {
-                    //Add Data to the Database
-                    Toast.makeText(AddNewMemberActivity.this, etvFirstName.getText().toString() + " "
-                            + etvDob.getText().toString() + " " + relation + " " + selectedUser, Toast.LENGTH_SHORT).show();
+                    //Add Data to the API Database
+
+
+
+                    if (relation.equals("PARENT")) {
+                        for (int i = 0; i >= myDataBaseHandler.getAllMembers().size(); i++) {
+                            if (selectedUser == myDataBaseHandler.getAllMembers().get(i).getUserName()) {
+                                String pid = myDataBaseHandler.getAllMembers().get(i).getUserParentId();
+                                myDataBaseHandler.insertMemberData(etvFirstName.getText().toString(), etvDob.getText().toString(), imgProfile.toString(), pid);
+                                Toast.makeText(AddNewMemberActivity.this, "" + pid, Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        }
+//                        myDataBaseHandler.insertMemberData(etvFirstName.getText().toString(),etvDob.getText().toString(),imgProfile.toString(),selectedUser);
+                        //myDataBaseHandler.insertMemberData(etvFirstName.getText().toString(), etvDob.getText().toString(), imgProfile.toString(), String.valueOf(userId));
+                        //Add User with ParentId of Parent's ParentId and then change the Parent's ParentId to the UserId of the New User
+                        Toast.makeText(AddNewMemberActivity.this, "" + relation + userId, Toast.LENGTH_SHORT).show();
+
+
+
+                    } else if (relation.equals("CHILD")) {
+                        if (editMode || editProfile) {
+                            myDataBaseHandler.updateMember(getIntent().getStringExtra("MemberId"), etvFirstName.getText().toString(), etvDob.getText().toString(), imgProfile.toString(), getIntent().getStringExtra("MemberParentId"));
+                        } else {
+                            myDataBaseHandler.insertMemberData(etvFirstName.getText().toString(), etvDob.getText().toString(), imgProfile.toString(), String.valueOf(userId));
+                        }
+                        Toast.makeText(AddNewMemberActivity.this, etvFirstName.getText().toString() + " " + etvDob.getText().toString() + " " + relation + " " + selectedUser + userId, Toast.LENGTH_SHORT).show();
+                        finish();
+                        //Add User with the selectedUser's UserId
+                    }
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
     @Override

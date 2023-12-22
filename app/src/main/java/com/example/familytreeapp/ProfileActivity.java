@@ -43,6 +43,7 @@ public class ProfileActivity extends AppCompatActivity {
                 intent.putExtra("EditProfile", true);
                 intent.putExtra("FirstName", txtFirstName.getText().toString());
                 intent.putExtra("Dob", txtDob.getText().toString());
+                intent.putExtra("Image",imgProfile.toString());
                 startActivity(intent);
             }
         });

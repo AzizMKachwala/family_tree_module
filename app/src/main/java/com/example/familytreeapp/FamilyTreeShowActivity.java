@@ -16,6 +16,7 @@ public class FamilyTreeShowActivity extends AppCompatActivity {
     ZoomLayout zoomLayout;
     NodeAdapter nodeAdapter;
     ImageView imgBack;
+    MyDataBaseHandler myDataBaseHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,8 @@ public class FamilyTreeShowActivity extends AppCompatActivity {
             }
         });
 
-        nodeAdapter = new NodeAdapter(FamilyTreeShowActivity.this);
+        myDataBaseHandler = new MyDataBaseHandler(FamilyTreeShowActivity.this);
+        nodeAdapter = new NodeAdapter(FamilyTreeShowActivity.this, myDataBaseHandler.getAllMembers());
         recyclerViewNode.setLayoutManager(new LinearLayoutManager(FamilyTreeShowActivity.this));
         recyclerViewNode.setAdapter(nodeAdapter);
 

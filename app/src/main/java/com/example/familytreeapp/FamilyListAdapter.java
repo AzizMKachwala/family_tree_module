@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,15 +17,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FamilyListAdapter extends RecyclerView.Adapter<FamilyListAdapter.FamilyListDataViewHolder> {
 
-    //    private ArrayList<MyDbDataModelNotes> myDbDataModelNotesArrayList, searchList;
+    private ArrayList<MyDbDataModelFamily> myDbDataModelFamilyArrayList, searchList;
     Context context;
+    MyDataBaseHandler myDataBaseHandler;
+
     private boolean editMode = false;
 
-    public FamilyListAdapter(Context context) {
+    public FamilyListAdapter(Context context, ArrayList<MyDbDataModelFamily> myDbDataModelFamilyArrayList) {
+        this.myDbDataModelFamilyArrayList = myDbDataModelFamilyArrayList;
+        this.searchList = myDbDataModelFamilyArrayList;
         this.context = context;
     }
 
@@ -41,18 +45,23 @@ public class FamilyListAdapter extends RecyclerView.Adapter<FamilyListAdapter.Fa
 
     @Override
     public void onBindViewHolder(@NonNull FamilyListDataViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.txtMemberName.setText("Aziz");
-        holder.txtMemberDob.setText("2001/04/24");
 
-        Glide.with(context).load(R.drawable.photo_final).into(holder.imgMember);
+        myDataBaseHandler = new MyDataBaseHandler(holder.itemView.getContext());
+        holder.txtMemberName.setText(searchList.get(position).getUserName());
+        holder.txtMemberDob.setText(searchList.get(position).getUserDob());
+
+        Glide.with(context).load(searchList.get(position).getUserImage()).into(holder.imgMember);
 
         holder.imgEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, AddNewMemberActivity.class);
                 intent.putExtra("EditMode", true);
-                intent.putExtra("MemberName", holder.txtMemberName.getText().toString());
-                intent.putExtra("MemberDob", holder.txtMemberDob.getText().toString());
+                intent.putExtra("MemberId", searchList.get(position).getUserId());
+                intent.putExtra("MemberName", searchList.get(position).getUserName());
+                intent.putExtra("MemberDob", searchList.get(position).getUserDob());
+                intent.putExtra("MemberImage", searchList.get(position).getUserImage());
+                intent.putExtra("MemberParentId", searchList.get(position).getUserParentId());
                 context.startActivity(intent);
             }
         });
@@ -68,6 +77,9 @@ public class FamilyListAdapter extends RecyclerView.Adapter<FamilyListAdapter.Fa
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //Delete Node API
+
+                        myDataBaseHandler.deleteMemberById(myDataBaseHandler.getAllMembers().get(position).getUserId());
+                        updateData(myDataBaseHandler.getAllMembers());
                         Toast.makeText(context, "Delete Toast", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -86,7 +98,20 @@ public class FamilyListAdapter extends RecyclerView.Adapter<FamilyListAdapter.Fa
 
     @Override
     public int getItemCount() {
-        return 10;
+        if (searchList.size() > 0 && searchList != null) {
+            return searchList.size();
+        } else {
+            return 0;
+        }
+    }
+
+    public void updateData(ArrayList<MyDbDataModelFamily> myDbDataModelFamilies) {
+        if (myDbDataModelFamilies != null && myDbDataModelFamilies.size() > 0) {
+            myDbDataModelFamilyArrayList = myDbDataModelFamilies;
+            searchList = myDbDataModelFamilies;
+            notifyDataSetChanged();
+        }
+
     }
 
     public void search(CharSequence charSequence, TextView txtNoData, RecyclerView recyclerViewFamilyList) {

@@ -29,7 +29,7 @@ public class FamilyTreeFragment extends Fragment {
         btnGenerateTree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), FamilyTreeShowActivity.class);
+                Intent intent = new Intent(getActivity(), BuchheimWalkerActivity.class);
                 startActivity(intent);
             }
         });

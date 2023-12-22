@@ -10,12 +10,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 public class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.NodeDataViewHolder> {
 
     Context context;
+    private ArrayList<MyDbDataModelFamily> myDbDataModelFamilyArrayList, searchList;
+    MyDataBaseHandler myDataBaseHandler;
 
-    public NodeAdapter(Context context) {
+    public NodeAdapter(Context context, ArrayList<MyDbDataModelFamily> myDbDataModelFamilyArrayList) {
         this.context = context;
+        this.myDbDataModelFamilyArrayList = myDbDataModelFamilyArrayList;
+        this.searchList = myDbDataModelFamilyArrayList;
     }
 
     @NonNull
@@ -28,13 +34,16 @@ public class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.NodeDataViewHo
 
     @Override
     public void onBindViewHolder(@NonNull NodeDataViewHolder holder, int position) {
-        holder.txtName.setText("Aziz");
-        holder.txtDob.setText("2001/04/24");
+
+        myDataBaseHandler = new MyDataBaseHandler(holder.itemView.getContext());
+        holder.txtName.setText(searchList.get(position).getUserName());
+        holder.txtDob.setText(searchList.get(position).getUserDob());
+        Tools.DisplayImage(context, holder.imgProfile, searchList.get(position).getUserImage());
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return searchList.size();
     }
 
     public static class NodeDataViewHolder extends RecyclerView.ViewHolder {

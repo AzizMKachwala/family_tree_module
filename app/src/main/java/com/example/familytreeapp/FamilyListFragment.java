@@ -17,6 +17,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class FamilyListFragment extends Fragment {
 
     RecyclerView recyclerViewFamilyList;
@@ -25,6 +27,7 @@ public class FamilyListFragment extends Fragment {
     TextView txtNoData;
     EditText etvSearch;
     ImageView imgClose;
+    MyDataBaseHandler myDataBaseHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,17 +51,29 @@ public class FamilyListFragment extends Fragment {
             }
         });
 
-        familyListAdapter = new FamilyListAdapter(getContext());
+        myDataBaseHandler = new MyDataBaseHandler(getContext());
+        familyListAdapter = new FamilyListAdapter(getContext(), myDataBaseHandler.getAllMembers());
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                if (myDataBaseHandler.getAllMembers().size() > 0 && myDataBaseHandler.getAllMembers() != null) {
+                    familyListAdapter.updateData(myDataBaseHandler.getAllMembers());
+                    txtNoData.setVisibility(View.GONE);
+                } else {
+                    txtNoData.setVisibility(View.VISIBLE);
+                }
                 refreshLayout.setRefreshing(false);
             }
         });
 
-        recyclerViewFamilyList.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewFamilyList.setAdapter(familyListAdapter);
+        if (myDataBaseHandler.getAllMembers().size() > 0 && myDataBaseHandler.getAllMembers() != null) {
+            recyclerViewFamilyList.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerViewFamilyList.setAdapter(familyListAdapter);
+            txtNoData.setVisibility(View.GONE);
+        } else {
+            txtNoData.setVisibility(View.VISIBLE);
+        }
 
         etvSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -84,14 +99,16 @@ public class FamilyListFragment extends Fragment {
             }
         });
 
-//        familyListAdapter.SetUpInterface(new FamilyListAdapter.ButtonClick() {
-//            @Override
-//            public void buttonClick(int position) {
-//                Intent intent = new Intent(getContext(), AddNewMemberActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (myDataBaseHandler.getAllMembers().size() > 0 && myDataBaseHandler.getAllMembers() != null) {
+            familyListAdapter.updateData(myDataBaseHandler.getAllMembers());
+            txtNoData.setVisibility(View.GONE);
+        } else {
+            txtNoData.setVisibility(View.VISIBLE);
+        }    }
 }
