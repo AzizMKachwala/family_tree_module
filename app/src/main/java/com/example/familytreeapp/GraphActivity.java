@@ -71,6 +71,9 @@ public abstract class GraphActivity extends AppCompatActivity {
         floatingActionButton = findViewById(R.id.addNode);
         floatingActionButton.setOnClickListener(view -> {
 
+//            Intent intent = new Intent(GraphActivity.this, AddNewMemberActivity.class);
+//            startActivity(intent);
+
             Node newNode = new Node(getNodeText());
             if (currentNode != null) {
                 graph.addEdge(currentNode, newNode);
