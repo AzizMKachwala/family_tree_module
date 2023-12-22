@@ -24,7 +24,7 @@ public class FamilyTreeFragment extends Fragment {
         btnGenerateTree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), FamilyTreeShowActivity.class);
+                Intent intent = new Intent(getContext(), BuchheimWalkerActivity.class);
                 startActivity(intent);
             }
         });
