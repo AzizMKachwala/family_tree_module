@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.List;
 import java.util.Objects;
 
 import dev.bandb.graphview.AbstractGraphAdapter;
@@ -36,6 +37,7 @@ public class FamilyTreeFragment extends Fragment {
 
     protected Graph createGraph() {
         Graph graph = new Graph();
+
         return graph;
     }
 
@@ -81,7 +83,7 @@ public class FamilyTreeFragment extends Fragment {
 
         adapter.submitGraph(graph);
         recyclerView.setAdapter(adapter);
-
+        
         floatingActionButton = view.findViewById(R.id.addNode);
         floatingActionButton.setOnClickListener(view1 -> {
 

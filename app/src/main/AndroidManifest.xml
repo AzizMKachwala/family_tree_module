@@ -31,9 +31,9 @@
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />
-        <activity
-            android:name=".BuchheimWalkerActivity"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".BuchheimWalkerActivity"-->
+<!--            android:exported="false" />-->
         <activity
             android:name=".FamilyTreeShowActivity"
             android:exported="false" />

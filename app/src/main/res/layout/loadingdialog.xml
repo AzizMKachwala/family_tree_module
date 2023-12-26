@@ -33,5 +33,4 @@
         android:textColor="@color/blue"
         android:textStyle="bold" />
 
-
 </LinearLayout>
